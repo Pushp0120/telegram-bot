@@ -316,6 +316,8 @@ def handle_attack(message):
             time = int(command[3])  # Convert port to integer
             if time > 1000:
                 response = "Error: Time interval must be less than 1000."
+                bot.reply_to(message, response)
+                return
             else:
                 record_command_logs(user_id, '/attack', target, port, time)
                 log_command(user_id, target, port, time)
@@ -333,12 +335,14 @@ def handle_attack(message):
                 thread = threading.Thread(target=wait_for_attack)
                 thread.start()
         else:
-            response = "✅ Usage :- /attack <target> <port> <time>"  # Updated command syntax
+            response = "Usage :- /attack <target> <port> <time>"  # Updated command syntax
+            bot.reply_to(message, response)
+            return
     else:
-        response = ("🚫 Unauthorized Access! 🚫\n\nOops! It seems like you don't have permission to use the /attack command.                                                                          DM TO BUY ACCESS:- @kingthenos_bhai")
-
-    bot.reply_to(message, response)
-
+        response = """ Unauthorized Access! 
+Oops! It seems like you don't have permission to use the /attack command. 
+DM TO BUY ACCESS:- @kingthenos_bhai"""
+        bot.reply_to(message, response)
 
 
 # Add /mylogs command to display logs recorded for bgmi and website commands

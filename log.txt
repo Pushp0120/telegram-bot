@@ -1,0 +1,7 @@
+UserID: 7474658501 | Time: 2026-04-11 22:17:58.171707 | Command: /attack | Target: 74.225.177.241 | Port: 12152 | Time: 300
+UserID: 7474658501 | Time: 2026-04-11 22:17:58.171707 | Command: /attack | Target: 74.225.177.241 | Port: 12132 | Time: 300
+Username: UserID: 7474658501
+Target: 74.225.177.241
+Port: 12152
+Time: 300
+
