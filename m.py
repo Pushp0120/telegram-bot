@@ -336,7 +336,7 @@ def handle_attack(message):
 @bot.message_handler(commands=['mylogs'])
 def show_command_logs(message):
     user_id = str(message.chat.id)
-    if user_id in allowed_user_ids:
+    if user_id in allowed_user_ids or user_id in admin_id:
         try:
             with open(LOG_FILE, "r") as file:
                 command_logs = file.readlines()
@@ -380,16 +380,30 @@ Official Channel :- https://t.me/+Bz7yCgbYk7RkNzQ9
 
 @bot.message_handler(commands=['start'])
 def welcome_start(message):
+    user_id = str(message.chat.id)
     user_name = message.from_user.first_name
-    response = f'''❄️ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ᴅᴅᴏs ʙᴏᴛ, {user_name}! ᴛʜɪs ɪs ʜɪɢʜ ǫᴜᴀʟɪᴛʏ sᴇʀᴠᴇʀ ʙᴀsᴇᴅ ᴅᴅᴏs. ᴛᴏ ɢᴇᴛ ᴀᴄᴄᴇss.
-🤖Try To Run This Command : /help 
-✅BUY :- @kingthenos_bhai'''
+    
+    if user_id in admin_id:
+        response = f'''{user_name}! THIS IS HIGH QUALITY SERVER BASED DDOS. 
+
+You are ADMIN! Full access granted.
+
+Admin Commands:
+/attack <target> <port> <time>
+/admincmd - Admin tools
+/allusers - Manage users
+/help - All commands'''
+    else:
+        response = f'''{user_name}! THIS IS HIGH QUALITY SERVER BASED DDOS. TO GET ACCESS.
+Try To Run This Command : /help 
+BUY :- @kingthenos_bhai'''
+    
     bot.reply_to(message, response)
 
 @bot.message_handler(commands=['rules'])
 def welcome_rules(message):
     user_name = message.from_user.first_name
-    response = f'''{user_name} Please Follow These Rules ⚠️:
+    response = f'''{user_name} Please Follow These Rules :
 
 1. Dont Run Too Many Attacks !! Cause A Ban From Bot
 2. Dont Run 2 Attacks At Same Time Becz If U Then U Got Banned From Bot.
