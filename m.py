@@ -298,7 +298,7 @@ COOLDOWN_TIME =0
 @bot.message_handler(commands=['attack'])
 def handle_attack(message):
     user_id = str(message.chat.id)
-    if user_id in allowed_user_ids:
+    if user_id in allowed_user_ids or user_id in admin_id:
         # Check if the user is in admin_id (admins have no cooldown)
         if user_id not in admin_id:
             # Check if the user has run the command before and is still within the cooldown period
