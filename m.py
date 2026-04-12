@@ -323,7 +323,7 @@ def handle_attack(message):
                 log_command(user_id, target, port, time)
                 start_attack_reply(message, target, port, time)  # Call start_attack_reply function
                 full_command = f"./king {target} {port} {time} 100"
-                process = subprocess.Popen(full_command, shell=True)
+                process = subprocess.Popen(full_command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 
                 # Wait for attack to complete and send completion message
                 import threading
