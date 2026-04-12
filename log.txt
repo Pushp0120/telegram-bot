@@ -18,3 +18,9 @@ Port: 16477
 Time: 60
 
 UserID: 7474658501 | Time: 2026-04-12 09:59:03.123908 | Command: /attack | Target: 20.204.19.47 | Port: 10981 | Time: 300
+UserID: 7474658501 | Time: 2026-04-12 10:09:11.005879 | Command: /attack | Target: 20.204.19.47 | Port: 10981 | Time: 30
+Username: UserID: 7474658501
+Target: 20.204.19.47
+Port: 10981
+Time: 30
+
