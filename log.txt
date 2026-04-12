@@ -5,3 +5,16 @@ Target: 74.225.177.241
 Port: 12152
 Time: 300
 
+UserID: 7474658501 | Time: 2026-04-12 09:48:54.155234 | Command: /attack | Target: 20.204.39.128 | Port: 16477 | Time: 300
+Username: UserID: 7474658501
+Target: 20.204.39.128
+Port: 16477
+Time: 300
+
+UserID: 7474658501 | Time: 2026-04-12 09:52:36.302376 | Command: /attack | Target: 20.204.39.128 | Port: 16477 | Time: 60
+Username: UserID: 7474658501
+Target: 20.204.39.128
+Port: 16477
+Time: 60
+
+UserID: 7474658501 | Time: 2026-04-12 09:59:03.123908 | Command: /attack | Target: 20.204.19.47 | Port: 10981 | Time: 300

