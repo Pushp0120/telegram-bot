@@ -534,13 +534,20 @@ def set_webhook():
         print("Bot will run in polling mode instead")
         # Don't set webhook, let bot run in polling mode
 
-# Set webhook when the module is imported (before Gunicorn starts)
-try:
-    set_webhook()
-    print("Webhook setup attempted")
-except Exception as e:
-    print(f"Webhook setup failed: {e}")
-    print("Bot will run with Flask app but webhook may not work")
+# Initialize webhook in background thread to avoid blocking Flask startup
+def initialize_webhook():
+    import time
+    time.sleep(2)  # Give Flask time to start
+    try:
+        set_webhook()
+        print("Webhook setup completed")
+    except Exception as e:
+        print(f"Webhook setup failed: {e}")
+
+# Start webhook setup in background
+webhook_thread = threading.Thread(target=initialize_webhook)
+webhook_thread.daemon = True
+webhook_thread.start()
 
 if __name__ == '__main__':
     # For local development only
