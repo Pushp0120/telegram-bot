@@ -489,6 +489,11 @@ def webhook():
 def health_check():
     return "Bot is running!", 200
 
+# Keep-alive endpoint to prevent Railway from stopping the container
+@app.route('/keep-alive')
+def keep_alive():
+    return "Bot is alive and running!", 200
+
 # Function to set webhook
 def set_webhook():
     # In Railway.app, try multiple environment variables to get the URL
