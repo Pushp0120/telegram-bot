@@ -494,47 +494,19 @@ def health_check():
 def keep_alive():
     return "Bot is alive and running!", 200
 
-# Function to set webhook
+# Webhook setup disabled for Railway polling mode
 def set_webhook():
-    # In Railway.app, try multiple environment variables to get the URL
-    railway_url = (
-        os.getenv('RAILWAY_PUBLIC_DOMAIN') or 
-        os.getenv('RAILWAY_URL') or 
-        os.getenv('PUBLIC_URL') or
-        os.getenv('URL') or
-        ''
-    )
-    
-    if railway_url:
-        # Ensure the URL has proper protocol
-        if not railway_url.startswith(('http://', 'https://')):
-            railway_url = f'https://{railway_url}'
-        webhook_url = f"{railway_url}/{BOT_TOKEN}"
-        print(f"Using Railway URL: {railway_url}")
-    else:
-        # Try to construct from Railway service URL pattern
-        service_id = os.getenv('RAILWAY_SERVICE_ID')
-        project_id = os.getenv('RAILWAY_PROJECT_ID')
-        if service_id and project_id:
-            railway_url = f"https://{project_id}.{service_id}.railway.app"
-            webhook_url = f"{railway_url}/{BOT_TOKEN}"
-            print(f"Constructed Railway URL: {railway_url}")
-        else:
-            # Fallback for local development
-            port = os.getenv('PORT', '7860')
-            webhook_url = f"http://localhost:{port}/{BOT_TOKEN}"
-            print(f"Using local development URL: {webhook_url}")
-    
-    try:
-        bot.remove_webhook()
-        bot.set_webhook(url=webhook_url)
-        print(f"Webhook successfully set to: {webhook_url}")
-    except Exception as e:
-        print(f"Failed to set webhook: {e}")
-        print("Bot will run in polling mode instead")
-        # Don't set webhook, let bot run in polling mode
+    print("Webhook setup disabled - using polling mode for Railway")
+    return False
 
-# For Railway, use polling mode instead of webhook for better reliability
+# For Railway, remove webhook first then use polling mode
+print("Removing webhook before starting polling mode")
+try:
+    bot.remove_webhook()
+    print("Webhook removed successfully")
+except Exception as e:
+    print(f"Failed to remove webhook: {e}")
+
 print("Starting bot in polling mode for Railway deployment")
 
 if __name__ == '__main__':
