@@ -14,5 +14,5 @@ COPY . .
 # Expose port
 EXPOSE 7860
 
-# Command to run the app
-CMD ["python", "app_updated.py"]
+# Command to run the app with gunicorn
+CMD ["gunicorn", "app_updated:app", "--bind", "0.0.0.0:7860"]
