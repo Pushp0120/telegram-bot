@@ -534,17 +534,16 @@ def set_webhook():
         print("Bot will run in polling mode instead")
         # Don't set webhook, let bot run in polling mode
 
+# Set webhook when the module is imported (before Gunicorn starts)
+try:
+    set_webhook()
+    print("Webhook setup attempted")
+except Exception as e:
+    print(f"Webhook setup failed: {e}")
+    print("Bot will run with Flask app but webhook may not work")
+
 if __name__ == '__main__':
-    # For Railway, always start the Flask app to keep endpoints accessible
-    # Try to set webhook when the app starts
-    try:
-        set_webhook()
-        print("Webhook mode enabled")
-    except Exception as e:
-        print(f"Webhook setup failed: {e}")
-        print("Bot will run with Flask app but webhook may not work")
-    
-    # Always run Flask app for Railway (needed for health checks and endpoints)
+    # For local development only
     port = int(os.getenv('PORT', 7860))
     print(f"Starting Flask app on port {port}")
     app.run(host='0.0.0.0', port=port)
