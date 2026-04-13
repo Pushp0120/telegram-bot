@@ -534,23 +534,10 @@ def set_webhook():
         print("Bot will run in polling mode instead")
         # Don't set webhook, let bot run in polling mode
 
-# Initialize webhook in background thread to avoid blocking Flask startup
-def initialize_webhook():
-    import time
-    time.sleep(2)  # Give Flask time to start
-    try:
-        set_webhook()
-        print("Webhook setup completed")
-    except Exception as e:
-        print(f"Webhook setup failed: {e}")
-
-# Start webhook setup in background
-webhook_thread = threading.Thread(target=initialize_webhook)
-webhook_thread.daemon = True
-webhook_thread.start()
+# For Railway, use polling mode instead of webhook for better reliability
+print("Starting bot in polling mode for Railway deployment")
 
 if __name__ == '__main__':
-    # For local development only
-    port = int(os.getenv('PORT', 7860))
-    print(f"Starting Flask app on port {port}")
-    app.run(host='0.0.0.0', port=port)
+    # For Railway deployment, use polling mode
+    print("Starting bot in polling mode...")
+    bot.polling(none_stop=True)

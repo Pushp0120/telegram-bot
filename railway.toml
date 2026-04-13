@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "gunicorn app_updated:app --bind 0.0.0.0:7860"
+startCommand = "python app_updated.py"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
