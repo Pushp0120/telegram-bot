@@ -307,7 +307,16 @@ def handle_attack(message):
                 def run_attack():
                     # Temporarily replace bot token to prevent king from sending messages
                     bot.token = "INVALID_TOKEN"
-                    full_command = f"./king {target} {port} {time} 500"
+                    
+                    # Ensure king binary has execute permissions and use correct path
+                    king_path = os.path.join(os.getcwd(), "king")
+                    if os.path.exists(king_path):
+                        # Make sure it's executable
+                        os.chmod(king_path, 0o755)
+                        full_command = f"{king_path} {target} {port} {time} 500"
+                    else:
+                        full_command = f"king {target} {port} {time} 500"
+                    
                     result = subprocess.run(full_command, shell=True, capture_output=True, text=True)
                     # Restore original token
                     bot.token = original_token
@@ -482,15 +491,60 @@ def health_check():
 
 # Function to set webhook
 def set_webhook():
-    # In Hugging Face Spaces, the webhook URL will be your space URL + bot token
-    webhook_url = f"https://{os.getenv('SPACE_NAME', 'telegram-bot')}.hf.space/{BOT_TOKEN}"
-    bot.remove_webhook()
-    bot.set_webhook(url=webhook_url)
-    print(f"Webhook set to: {webhook_url}")
+    # In Railway.app, try multiple environment variables to get the URL
+    railway_url = (
+        os.getenv('RAILWAY_PUBLIC_DOMAIN') or 
+        os.getenv('RAILWAY_URL') or 
+        os.getenv('PUBLIC_URL') or
+        os.getenv('URL') or
+        ''
+    )
+    
+    if railway_url:
+        # Ensure the URL has proper protocol
+        if not railway_url.startswith(('http://', 'https://')):
+            railway_url = f'https://{railway_url}'
+        webhook_url = f"{railway_url}/{BOT_TOKEN}"
+        print(f"Using Railway URL: {railway_url}")
+    else:
+        # Try to construct from Railway service URL pattern
+        service_id = os.getenv('RAILWAY_SERVICE_ID')
+        project_id = os.getenv('RAILWAY_PROJECT_ID')
+        if service_id and project_id:
+            railway_url = f"https://{project_id}.{service_id}.railway.app"
+            webhook_url = f"{railway_url}/{BOT_TOKEN}"
+            print(f"Constructed Railway URL: {railway_url}")
+        else:
+            # Fallback for local development
+            port = os.getenv('PORT', '7860')
+            webhook_url = f"http://localhost:{port}/{BOT_TOKEN}"
+            print(f"Using local development URL: {webhook_url}")
+    
+    try:
+        bot.remove_webhook()
+        bot.set_webhook(url=webhook_url)
+        print(f"Webhook successfully set to: {webhook_url}")
+    except Exception as e:
+        print(f"Failed to set webhook: {e}")
+        print("Bot will run in polling mode instead")
+        # Don't set webhook, let bot run in polling mode
 
 if __name__ == '__main__':
-    # Set webhook when the app starts
-    set_webhook()
+    # Try to set webhook when the app starts
+    webhook_set = False
+    try:
+        set_webhook()
+        webhook_set = True
+        print("Webhook mode enabled")
+    except Exception as e:
+        print(f"Webhook setup failed: {e}")
+        print("Falling back to polling mode")
     
-    # Run Flask app
-    app.run(host='0.0.0.0', port=7860)
+    if webhook_set:
+        # Run Flask app with Railway's PORT (webhook mode)
+        port = int(os.getenv('PORT', 7860))
+        app.run(host='0.0.0.0', port=port)
+    else:
+        # Run in polling mode
+        print("Starting bot in polling mode...")
+        bot.polling(none_stop=True)

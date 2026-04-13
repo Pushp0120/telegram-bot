@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 7860
 
 # Command to run the app
-CMD ["python", "app.py"]
+CMD ["python", "app_updated.py"]
