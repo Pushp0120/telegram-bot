@@ -535,21 +535,16 @@ def set_webhook():
         # Don't set webhook, let bot run in polling mode
 
 if __name__ == '__main__':
+    # For Railway, always start the Flask app to keep endpoints accessible
     # Try to set webhook when the app starts
-    webhook_set = False
     try:
         set_webhook()
-        webhook_set = True
         print("Webhook mode enabled")
     except Exception as e:
         print(f"Webhook setup failed: {e}")
-        print("Falling back to polling mode")
+        print("Bot will run with Flask app but webhook may not work")
     
-    if webhook_set:
-        # Run Flask app with Railway's PORT (webhook mode)
-        port = int(os.getenv('PORT', 7860))
-        app.run(host='0.0.0.0', port=port)
-    else:
-        # Run in polling mode
-        print("Starting bot in polling mode...")
-        bot.polling(none_stop=True)
+    # Always run Flask app for Railway (needed for health checks and endpoints)
+    port = int(os.getenv('PORT', 7860))
+    print(f"Starting Flask app on port {port}")
+    app.run(host='0.0.0.0', port=port)
